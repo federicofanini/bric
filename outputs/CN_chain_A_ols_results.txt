@@ -1,0 +1,27 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                    hdi   R-squared:                       0.952
+Model:                            OLS   Adj. R-squared:                  0.939
+Method:                 Least Squares   F-statistic:                     72.50
+Date:                Fri, 11 Apr 2025   Prob (F-statistic):           1.57e-07
+Time:                        19:02:14   Log-Likelihood:                 49.947
+No. Observations:                  15   AIC:                            -91.89
+Df Residuals:                      11   BIC:                            -89.06
+Df Model:                           3                                         
+Covariance Type:            nonrobust                                         
+=========================================================================================
+                            coef    std err          t      P>|t|      [0.025      0.975]
+-----------------------------------------------------------------------------------------
+const                     0.0243      0.139      0.175      0.864      -0.281       0.329
+gdp_growth                0.0132      0.005      2.630      0.023       0.002       0.024
+education_expenditure     0.0422      0.011      3.979      0.002       0.019       0.066
+health_expenditure        0.0931      0.016      5.797      0.000       0.058       0.128
+==============================================================================
+Omnibus:                        0.090   Durbin-Watson:                   1.637
+Prob(Omnibus):                  0.956   Jarque-Bera (JB):                0.275
+Skew:                           0.136   Prob(JB):                        0.872
+Kurtosis:                       2.395   Cond. No.                         554.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.

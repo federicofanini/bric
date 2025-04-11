@@ -1,0 +1,26 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                    hdi   R-squared:                       0.677
+Model:                            OLS   Adj. R-squared:                  0.639
+Method:                 Least Squares   F-statistic:                     17.79
+Date:                Fri, 11 Apr 2025   Prob (F-statistic):           6.79e-05
+Time:                        19:02:14   Log-Likelihood:                 52.043
+No. Observations:                  20   AIC:                            -98.09
+Df Residuals:                      17   BIC:                            -95.10
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+const          0.5944      0.054     11.092      0.000       0.481       0.707
+gdp_growth    -0.0043      0.001     -4.243      0.001      -0.006      -0.002
+gcf            0.0097      0.002      4.046      0.001       0.005       0.015
+==============================================================================
+Omnibus:                        1.637   Durbin-Watson:                   0.808
+Prob(Omnibus):                  0.441   Jarque-Bera (JB):                0.374
+Skew:                           0.087   Prob(JB):                        0.830
+Kurtosis:                       3.647   Cond. No.                         278.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
