@@ -1,57 +1,59 @@
 import pandas as pd
-import numpy as np
+import os
 
-def clean_brach_data(file_path):
-    # Read the CSV file
-    df = pd.read_csv(file_path)
-    
-    # Clean column names
-    df.columns = [col.strip() for col in df.columns]
-    
-    # Convert comma decimal separators to periods and convert to numeric
-    numeric_columns = ['GDP PER CAPITA (current US$)', 'GDP PER CAPITA GROWTH RATE', 'HDI*', 
-                      'EDUCATION EXPENDITURE (% OF GDP)', 'HEALTH EXPENDITURE (% OF GDP)']
-    
-    for col in numeric_columns:
-        if col in df.columns:
-            df[col] = df[col].str.replace(',', '.').astype(float)
-    
-    # Drop empty columns and unnamed columns
-    df = df.dropna(axis=1, how='all')
-    unnamed_cols = [col for col in df.columns if 'Unnamed' in col]
-    df = df.drop(columns=unnamed_cols)
-    
-    # Rename columns for easier access
-    df = df.rename(columns={
-        'GDP PER CAPITA (current US$)': 'GDP_per_capita',
-        'GDP PER CAPITA GROWTH RATE': 'GDP_growth_rate',
-        'HDI*': 'HDI',
-        'EDUCATION EXPENDITURE (% OF GDP)': 'education_expenditure',
-        'HEALTH EXPENDITURE (% OF GDP)': 'health_expenditure'
-    })
-    
-    # Ensure YEAR is numeric
-    df['YEAR'] = pd.to_numeric(df['YEAR'], errors='coerce')
-    
-    # Sort by year
-    df = df.sort_values('YEAR')
-    
-    # Reset index
-    df = df.reset_index(drop=True)
-    
-    return df
+def clean_bric_data(df):
+    """
+    Clean BRIC annual dataset and export it to structured Excel file for regression use.
 
-if __name__ == "__main__":
-    # Clean the data
-    cleaned_df = clean_brach_data('data/BRACH_A.csv')
+    - Removes rows with missing required variables based on chain type.
+    - Explicitly drops 'gcf' from Chain A (not used).
+    - Exports full, per-chain, and per-country datasets.
+
+    Args:
+        df (pd.DataFrame): Combined dataset from load_bric_data().
+
+    Returns:
+        pd.DataFrame: Cleaned dataset ready for regression.
+    """
+    df = df.copy()
+
+    # Split data by chain type
+    chain_a = df[df['chain'] == 'A']
+    chain_b = df[df['chain'] == 'B']
+
+    # Remove 'gcf' from Chain A as it's not used in that chain
+    chain_a = chain_a.drop(columns=['gcf'], errors='ignore')  # errors='ignore' in case column doesn't exist
+
+    # Drop rows with missing required values
+    chain_a = chain_a.dropna(subset=['gdp_growth', 'hdi', 'education_expenditure', 'health_expenditure'])
+    chain_b = chain_b.dropna(subset=['gdp_growth', 'hdi', 'gcf'])
+
+    # Export to Excel
+    output_path = 'data/processed/bric_regression_data.xlsx'
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
+        # Export Chain A data
+        chain_a.to_excel(writer, sheet_name='Chain_A', index=False)
+        
+        # Export Chain B data
+        chain_b.to_excel(writer, sheet_name='Chain_B', index=False)
+
+        # Export per country data
+        for country in df['country'].unique():
+            # Chain A data for country
+            country_a = chain_a[chain_a['country'] == country]
+            if not country_a.empty:
+                sheet_name = f'{country}_A'[:31]  # Excel sheet name limit
+                country_a.to_excel(writer, sheet_name=sheet_name, index=False)
+            
+            # Chain B data for country
+            country_b = chain_b[chain_b['country'] == country]
+            if not country_b.empty:
+                sheet_name = f'{country}_B'[:31]  # Excel sheet name limit
+                country_b.to_excel(writer, sheet_name=sheet_name, index=False)
+
+    print(f"\n✅ Cleaned dataset exported to: {output_path}")
     
-    # Save the cleaned data
-    cleaned_df.to_csv('data/BRACH_A_cleaned.csv', index=False)
-    
-    # Print basic information about the cleaned data
-    print("\nCleaned Data Information:")
-    print(cleaned_df.info())
-    print("\nFirst few rows of cleaned data:")
-    print(cleaned_df.head())
-    print("\nSummary statistics:")
-    print(cleaned_df.describe()) 
+    # Return combined dataset for further analysis
+    return pd.concat([chain_a, chain_b], ignore_index=True)

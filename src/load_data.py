@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-# Define sheet name mapping
+# Mapping of Excel sheet names by country and chain
 COUNTRY_SHEETS = {
     'BR_A': 'BRA CH.A',
     'BR_B': 'BRA CH.B',
@@ -13,7 +13,7 @@ COUNTRY_SHEETS = {
     'CN_B': 'CHN B'
 }
 
-# Define column mappings for each chain
+# Mapping of original column names to standard format
 CHAIN_COLUMNS = {
     'A': {
         'YEAR': 'year',
@@ -31,62 +31,44 @@ CHAIN_COLUMNS = {
     }
 }
 
-def load_bric_data(path='data/dataset.xlsx', country_code=None, chain=None):
+def load_bric_data(path='data/dataset.xlsx'):
     """
-    Load BRIC data from Excel file.
+    Load and normalize BRIC data from an Excel file, combining all countries and both chains (A and B).
     
     Args:
-        path (str): Path to the Excel file
-        country_code (str): Country code (BR, RU, IN, or CN)
-        chain (str): Chain type ('A' or 'B')
-        
+        path (str): Path to the Excel file containing raw data.
+    
     Returns:
-        pd.DataFrame: Loaded and cleaned data
+        pd.DataFrame: Combined, cleaned, and labeled annual data for all countries and chains.
     """
-    # Read the Excel file from specific sheet if country_code is provided
-    if country_code and chain:
-        sheet_key = f"{country_code}_{chain}"
-        sheet_name = COUNTRY_SHEETS[sheet_key]
+    all_dfs = []
+
+    for key, sheet_name in COUNTRY_SHEETS.items():
+        country_code, chain = key.split('_')
+        country_map = {'BR': 'Brazil', 'RU': 'Russia', 'IN': 'India', 'CN': 'China'}
+        country = country_map[country_code]
+        columns_map = CHAIN_COLUMNS[chain]
+
+        # Load and clean the sheet
         df = pd.read_excel(path, sheet_name=sheet_name)
-    else:
-        # If no country_code provided, read all sheets and concatenate
-        all_data = pd.read_excel(path, sheet_name=list(COUNTRY_SHEETS.values()))
-        df = pd.concat([all_data[sheet] for sheet in COUNTRY_SHEETS.values()], 
-                      keys=COUNTRY_SHEETS.keys(),
-                      names=['country', 'index'])
-        df = df.reset_index(level='country')
-    
-    # Clean column names
-    df.columns = df.columns.str.strip()
-    
-    # Get the appropriate column mapping based on chain
-    numeric_columns = CHAIN_COLUMNS[chain] if chain else CHAIN_COLUMNS['A']
-    
-    # Drop unnamed columns
-    df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
-    
-    # Rename columns
-    df = df.rename(columns=numeric_columns)
-    
-    # Convert numeric columns and handle missing values
-    for col in numeric_columns.values():
-        if col in df.columns:
-            # Convert to string, replace commas with dots, then to numeric
-            df[col] = pd.to_numeric(df[col].astype(str).str.replace(',', '.'), errors='coerce')
-            
-            # Replace infinite values with NaN
-            df[col] = df[col].replace([np.inf, -np.inf], np.nan)
-    
-    # Drop rows with missing values in key columns
-    required_columns = ['gdp_growth', 'hdi']
-    if chain == 'A':
-        required_columns.extend(['education_expenditure', 'health_expenditure'])
-    elif chain == 'B':
-        required_columns.append('gcf')
-        
-    df = df.dropna(subset=required_columns)
-    
-    # Sort by year
-    df = df.sort_values('year')
-    
-    return df
+        df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+        df.columns = df.columns.str.strip()
+        df = df.rename(columns=columns_map)
+
+        # Add metadata columns
+        df['country'] = country
+        df['chain'] = chain
+
+        # Normalize numeric values
+        for col in columns_map.values():
+            if col in df.columns:
+                df[col] = pd.to_numeric(df[col].astype(str).str.replace(',', '.'), errors='coerce')
+                df[col] = df[col].replace([np.inf, -np.inf], np.nan)
+
+        all_dfs.append(df)
+
+    # Combine all sheets
+    full_df = pd.concat(all_dfs, ignore_index=True)
+    full_df = full_df.sort_values(['country', 'year', 'chain']).reset_index(drop=True)
+
+    return full_df

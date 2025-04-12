@@ -7,30 +7,28 @@ This repository contains an Ordinary Least Squares (OLS) analysis of the relatio
 The project analyzes two causal chains:
 
 1. Chain A: Economic Growth → Human Development
+
+   - Variables: GDP growth, HDI, education expenditure, health expenditure
+   - Lagged variables: 5-year lags for GDP growth and HDI
+
 2. Chain B: Human Development → Economic Growth
-
-The analysis includes:
-
-- Data preprocessing and feature engineering
-- OLS regression modeling
-- Visualization of key trends and relationships
-- Statistical analysis of the causal relationships
+   - Variables: GDP growth, HDI, gross capital formation (gcf)
+   - Lagged variables: 5-year lags for GDP growth and HDI
 
 ## Project Structure
 
 ```
 .
-├── data/               # Data files
-├── src/                # Source code
-│   ├── load_data.py    # Data loading functions
-│   ├── utils.py        # Utility functions
-│   ├── regression.py   # OLS regression models
-│   ├── clean_data.py   # Data cleaning script
-│   ├── ols_analysis.py # OLS analysis script
-│   └── visualize.py    # Visualization functions
-├── figures/            # Generated plots and analysis results
-├── main.py             # Main execution script
-└── requirements.txt    # Python dependencies
+├── data/                    # Data files
+│   ├── raw/                 # Raw data files
+│   └── processed/           # Processed data files
+├── src/                     # Source code
+│   ├── load_data.py         # Loads and combines BRIC data from Excel
+│   ├── clean_data.py        # Cleans and preprocesses data
+│   ├── utils.py             # Utility functions (lag creation)
+│   └── visualize.py         # Visualization functions
+├── main.py                  # Main execution script
+└── requirements.txt         # Python dependencies
 ```
 
 ## Dependencies
@@ -38,9 +36,9 @@ The analysis includes:
 The project requires the following Python packages:
 
 - pandas: For data manipulation and analysis
-- seaborn: For statistical data visualization
-- matplotlib: For creating static, animated, and interactive visualizations
+- openpyxl: For Excel file handling
 - statsmodels: For statistical models and tests
+- matplotlib: For creating visualizations
 
 ## Installation
 
@@ -48,7 +46,7 @@ The project requires the following Python packages:
 
 ```bash
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
 2. Install dependencies:
@@ -59,25 +57,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Run the Data Cleaning Script
-
-Navigate to the `src` directory and run the data cleaning script:
-
-```bash
-python src/clean_data.py
-```
-
-### Run the OLS Analysis
-
-Execute the OLS analysis script:
-
-```bash
-python src/ols_analysis.py
-```
-
-### Run the Main Analysis
-
-Finally, run the main script to perform the full analysis and generate visualizations:
+Run the main script to perform the full analysis:
 
 ```bash
 python main.py
@@ -85,41 +65,45 @@ python main.py
 
 This will:
 
-1. Load and preprocess the BRIC countries data
-2. Run the OLS regression analysis for both causal chains
-3. Generate visualizations in the `figures` directory
+1. Load BRIC data from Excel files
+2. Clean and preprocess the data
+3. Create lagged variables
+4. Run OLS regression analysis
+5. Generate visualizations
 
-## Analysis Components
+## Data Processing
 
-### Data Processing
+### Loading Data
 
-- Loading BRIC countries data
-- Creating lagged variables
-- Adding country dummy variables
+- Loads data from Excel files for each BRIC country
+- Combines data for both chains (A and B)
+- Standardizes column names and formats
 
-### Regression Analysis
+### Cleaning Data
 
-- Chain A: Economic Growth → Human Development
-- Chain B: Human Development → Economic Growth
+- Removes missing values
+- Handles outliers
+- Separates data by chain type
+- Removes unused variables (e.g., gcf from Chain A)
 
-### Visualizations
+### Feature Engineering
 
-- Time series plots of GDP growth and HDI
-- Scatter plots of key relationships
-- Correlation heatmaps
-- Quadrant analysis plots
+- Creates 5-year lagged variables for GDP growth and HDI
+- Handles missing values in lagged variables
 
 ## Output
 
 The analysis generates:
 
-1. Regression model summaries in the console
-2. Visualizations saved in the `figures` directory:
-   - GDP growth trends
-   - HDI trends
-   - Scatter plots
-   - Heatmaps
-   - Quadrant analysis
+1. Processed data in Excel format:
+
+   - `data/processed/bric_regression_data.xlsx`
+   - Separate sheets for each chain and country
+
+2. Regression results in the console:
+   - Model summaries
+   - Statistical significance
+   - R-squared values
 
 ## Contributing
 
