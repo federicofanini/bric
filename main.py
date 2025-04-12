@@ -8,10 +8,12 @@ import os
 from src.load_data import load_bric_data
 from src.clean_data import clean_bric_data
 from src.utils import create_lags
+from src.diagnostics import run_diagnostics
 
 # Create output directories if they don't exist
 os.makedirs('outputs', exist_ok=True)
 os.makedirs('figures', exist_ok=True)
+os.makedirs('figures/diagnostics', exist_ok=True)
 
 # Define chain-specific variables (lagged)
 CHAIN_VARS = {
@@ -89,6 +91,10 @@ def analyze_country_chain(df, country, chain):
             continue
 
         save_regression_outputs(model, country, chain, label)
+
+        # Run diagnostics
+        model_name = f"{country}_chain_{chain}_{label}"
+        run_diagnostics(model, model_name=model_name)
 
         # Print summary
         print(f"[{label.upper()}] R²: {model.rsquared:.4f} | Adj. R²: {model.rsquared_adj:.4f}")
