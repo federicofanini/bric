@@ -53,3 +53,9 @@ figures/*
 # OS specific
 .DS_Store
 Thumbs.db
+
+# Except
+!data/dataset.xlsx
+!data/bric_regression_ready.xlsx
+!outputs/regression_r2_summary.csv
+!outputs/output_analysis.md
