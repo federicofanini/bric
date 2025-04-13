@@ -26,41 +26,44 @@ os.makedirs('tables', exist_ok=True)
 
 def main():
     # Step 1: Load and clean data
+    print("\n📊 Step 1: Loading and cleaning data...")
     df = load_bric_data()
     df = clean_bric_data(df)
+    print("✅ Data loaded and cleaned successfully")
     
     # Step 2: Perform descriptive analysis
-    print("\n📊 Performing descriptive analysis...")
+    print("\n📊 Step 2: Performing descriptive analysis...")
     create_descriptive_plots(df)
-    
-    # Genera e salva la tabella delle statistiche descrittive
     descriptive_table = generate_descriptive_table(df)
     with open('tables/descriptive_stats.md', 'w') as f:
         f.write(descriptive_table)
+    print("✅ Descriptive analysis completed")
     
     # Step 3: Create lagged variables
+    print("\n🔄 Step 3: Creating lagged variables...")
     df = create_lags(df)
+    print("✅ Lagged variables created")
     
     # Step 4: Run regression analysis
+    print("\n📈 Step 4: Running regression analysis...")
     countries = ['Brazil', 'Russia', 'India', 'China']
     chains = ['A', 'B']
-    
     all_results = run_regression_analysis(df, countries, chains)
+    print("✅ Regression analysis completed")
 
     # Step 5: Analyze development cycles
-    print("\n🔄 Analyzing development cycles...")
+    print("\n🔄 Step 5: Analyzing development cycles...")
     cycle_analyses = analyze_cycle_dynamics(df)
-    
-    # Extract metrics for plotting
     metrics = {country: analysis['metrics'] for country, analysis in cycle_analyses.items()}
-    
-    # Generate and save development typology plot
     plot_development_typology(metrics, 'figures/development_typology.png')
-    print("✅ Development typology plot saved to figures/development_typology.png")
+    print("✅ Development cycles analyzed and plotted")
 
-    # Generate all tables
-    print("\n📊 Generating tables...")
+    # Step 6: Generate all tables
+    print("\n📊 Step 6: Generating result tables...")
     generate_all_tables(df, all_results, cycle_analyses)
+    print("✅ All tables generated and saved")
+
+    print("\n✨ Analysis completed successfully!")
 
 if __name__ == "__main__":
     main()
