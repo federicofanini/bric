@@ -6,10 +6,10 @@
 
 | Paese  | Chain A (nolag) | Chain A (lag) | Chain B (nolag) | Chain B (lag) |
 | ------ | --------------- | ------------- | --------------- | ------------- |
-| Brazil | 0.94 → 🔥       | 0.90 → 💪     | 0.35 → meh      | 0.36 → meh    |
-| Russia | 0.50            | 0.55          | 0.51 → 👍       | 0.48 → 👍     |
-| India  | 0.78 → forte    | 0.77 → simile | 0.20 → debole   | 0.07 → 🫠      |
-| China  | 0.95 → top      | 0.99 → 💀     | 0.37 → meh      | 0.83 → 💥     |
+| Brazil | 0.94            | 0.90          | 0.35            | 0.36          |
+| Russia | 0.50            | 0.55          | 0.51            | 0.48          |
+| India  | 0.78            | 0.77          | 0.20            | 0.07          |
+| China  | 0.95            | 0.99          | 0.37            | 0.83          |
 
 ### 1.2 Osservazioni Preliminari
 
@@ -84,7 +84,7 @@
 
 #### China
 
-- Miglioramento drastico con lag (0.37 → 0.83) → 💥
+- Miglioramento drastico con lag (0.37 → 0.83)
 - HDI_lag5 super significativo (`p = 0.0000`)
 - Pattern molto interessante nei coefficienti
 
@@ -119,12 +119,12 @@ HDI_lag5: -91.5350 (p = 0.03)
 
    - hanno già "raccolto" il boost dello sviluppo umano
    - entrano in una fase di **maturità economica** (dove la crescita è più lenta)
-     🧠 **Es: HDI alto → meno margine di crescita "facile"**
+     **Es: HDI alto → meno margine di crescita "facile"**
 
 2. **Effetti di breve vs. lungo termine**
 
    > Magari nel breve, l'HDI elevato implica **più spesa pubblica**, **meno produttività immediata**, oppure transizioni strutturali che **frenano la crescita nel breve periodo**.
-   > 🧠 Es: se oggi migliori l'istruzione, i frutti si vedono tra 10 anni, non subito
+   > Es: se oggi migliori l'istruzione, i frutti si vedono tra 10 anni, non subito
 
 3. **Collinearità o errore di specificazione**
 
@@ -132,10 +132,12 @@ HDI_lag5: -91.5350 (p = 0.03)
 
    - Collinearity → coeff. sbilanciati
    - Pochi dati → stime instabili
-     🔎 Controlla i **correlation matrix** che hai già generato per vedere se c'è collinearità
+     Controlla i **correlation matrix** che hai già generato per vedere se c'è collinearità
 
 4. **Outliers o shock macro**
+
    > Se in un anno l'HDI è alto ma c'è **una crisi economica improvvisa** (tipo sanzioni in Russia), allora:
+
    - il modello vede "HDI alto = crescita bassa"
    - ma in realtà c'è **un fattore esterno** che interferisce
 
@@ -183,7 +185,7 @@ HDI_lag5: -91.5350 (p = 0.03)
 
 ### 5.3 Analisi dei Grafici Diagnostici
 
-- 🧠 Dai QQ plot → capisci se i residui sono normali (verifica la diagonale)
+- Dai QQ plot → capisci se i residui sono normali (verifica la diagonale)
 - Da **Residuals vs Fitted**:
   - Se vedi **a imbuto / parabola** → problema di eteroschedasticità
 - Da **Cook's Distance**:
@@ -216,3 +218,91 @@ HDI_lag5: -91.5350 (p = 0.03)
 > Al contrario, India e Cina mostrano valori di DW più prossimi all'ideale.
 >
 > I grafici diagnostici (QQ plot, residui vs fitted, Cook's distance) confermano generalmente la validità delle assunzioni OLS, con alcune eccezioni sporadiche dovute alla ridotta numerosità campionaria.
+
+## 7. Analisi Dettagliata delle Figure Diagnostiche
+
+### 7.1 Analisi dei QQ Plot
+
+#### Pattern Generali
+
+- **Chain A (Growth → HDI)**:
+
+  - **Brazil**: Distribuzione quasi normale, con leggera deviazione nelle code
+  - **Russia**: Deviazioni più marcate dalla normalità, specialmente nelle code superiori
+  - **India**: Buona aderenza alla normalità, con lievi deviazioni nelle code
+  - **China**: Distribuzione quasi perfettamente normale, specialmente nel modello con lag
+
+- **Chain B (HDI → Growth)**:
+
+  - **Brazil**: Deviazioni significative dalla normalità, specialmente nelle code inferiori
+  - **Russia**: Pattern simile a Brazil, con deviazioni più marcate
+  - **India**: Distribuzione relativamente normale, con lievi deviazioni
+  - **China**: Miglioramento significativo con l'introduzione del lag, distribuzione più normale
+
+#### Interpretazione
+
+> I QQ plot mostrano che i modelli della Chain A tendono ad avere distribuzioni più normali dei residui rispetto alla Chain B, supportando la maggiore robustezza dei risultati della Chain A.
+
+### 7.2 Analisi dei Residuals vs Fitted
+
+#### Pattern Generali
+
+- **Chain A**:
+
+  - **Brazil**: Pattern relativamente omogeneo, con lieve eteroschedasticità
+  - **Russia**: Maggiore dispersione dei residui, specialmente per valori fitted alti
+  - **India**: Pattern abbastanza omogeneo, con minima eteroschedasticità
+  - **China**: Pattern molto omogeneo, specialmente nel modello con lag
+
+- **Chain B**:
+
+  - **Brazil**: Eteroschedasticità più marcata, con dispersione crescente
+  - **Russia**: Pattern simile a Brazil, con maggiore variabilità
+  - **India**: Pattern relativamente omogeneo, con minima eteroschedasticità
+  - **China**: Miglioramento significativo con l'introduzione del lag, pattern più omogeneo
+
+#### Interpretazione
+
+> I grafici residuals vs fitted confermano la maggiore robustezza della Chain A, mostrando pattern più omogenei e meno eteroschedasticità. La Chain B mostra maggiore variabilità, specialmente in Brazil e Russia.
+
+### 7.3 Analisi dei Cook's Distance
+
+#### Pattern Generali
+
+- **Chain A**:
+
+  - **Brazil**: Alcuni punti con Cook's distance elevata, ma nessun outlier estremo
+  - **Russia**: Più punti con Cook's distance elevata, indicando possibili outlier influenti
+  - **India**: Cook's distance generalmente bassa, con pochi punti influenti
+  - **China**: Cook's distance molto bassa, indicando stabilità del modello
+
+- **Chain B**:
+
+  - **Brazil**: Più punti con Cook's distance elevata rispetto alla Chain A
+  - **Russia**: Pattern simile a Brazil, con più punti influenti
+  - **India**: Cook's distance generalmente bassa, con pochi punti influenti
+  - **China**: Miglioramento significativo con l'introduzione del lag, Cook's distance più bassa
+
+#### Interpretazione
+
+> I grafici di Cook's distance mostrano che i modelli della Chain A sono generalmente più stabili, con meno punti influenti. La Chain B mostra più punti con Cook's distance elevata, specialmente in Brazil e Russia, suggerendo una maggiore sensibilità a outlier.
+
+### 7.4 Conclusioni dalle Figure Diagnostiche
+
+1. **Robustezza dei Modelli**:
+
+   - La Chain A mostra diagnostiche generalmente migliori
+   - I modelli con lag tendono a mostrare diagnostiche migliori
+   - China e India mostrano le diagnostiche più robuste
+
+2. **Problemi Identificati**:
+
+   - Eteroschedasticità in alcuni modelli della Chain B
+   - Punti influenti in Russia e Brazil
+   - Deviazioni dalla normalità in alcuni modelli
+
+3. **Raccomandazioni**:
+
+   - Considerare l'uso di modelli robusti per Brazil e Russia
+   - Esplorare trasformazioni delle variabili per ridurre l'eteroschedasticità
+   - Investigare i punti influenti per capire se rappresentano eventi specifici

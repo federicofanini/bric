@@ -9,11 +9,13 @@ from src.load_data import load_bric_data
 from src.clean_data import clean_bric_data
 from src.utils import create_lags
 from src.diagnostics import run_diagnostics
+from src.visualize import create_descriptive_plots, generate_descriptive_stats
 
 # Create output directories if they don't exist
 os.makedirs('outputs', exist_ok=True)
 os.makedirs('figures', exist_ok=True)
 os.makedirs('figures/diagnostics', exist_ok=True)
+os.makedirs('results', exist_ok=True)
 
 # Define chain-specific variables (lagged)
 CHAIN_VARS = {
@@ -116,10 +118,22 @@ def analyze_country_chain(df, country, chain):
         })
 
 def main():
+    # Step 1: Load and clean data
     df = load_bric_data()
     df = clean_bric_data(df)
+    
+    # Step 2: Perform descriptive analysis
+    print("\n📊 Performing descriptive analysis...")
+    create_descriptive_plots(df)
+    descriptive_stats = generate_descriptive_stats(df)
+    with open('results/descriptive_analysis.md', 'w') as f:
+        f.write(descriptive_stats)
+    print("✅ Descriptive analysis completed and saved to results/descriptive_analysis.md")
+    
+    # Step 3: Create lagged variables
     df = create_lags(df)
-
+    
+    # Step 4: Run regression analysis
     countries = ['Brazil', 'Russia', 'India', 'China']
     chains = ['A', 'B']
 
