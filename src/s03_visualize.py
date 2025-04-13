@@ -9,6 +9,7 @@ def ensure_output_dir():
     os.makedirs('figures', exist_ok=True)
     os.makedirs('figures/descriptive', exist_ok=True)
     os.makedirs('figures/diagnostics', exist_ok=True)
+    os.makedirs('tables', exist_ok=True)
 
 def plot_time_series(df, column, title, ylabel, filename):
     plt.figure(figsize=(10, 6))
@@ -175,3 +176,63 @@ def generate_descriptive_table(df: pd.DataFrame) -> str:
             markdown += f"| {country} | {col} | {values['mean']:.2f} | {values['std']:.2f} | {values['min']:.2f} | {values['max']:.2f} |\n"
     
     return markdown
+
+def generate_results_tables(df: pd.DataFrame, regression_results: dict, cycle_analyses: dict) -> None:
+    """
+    Genera e salva le tabelle dei risultati in formato markdown.
+    
+    Args:
+        df: DataFrame con i dati
+        regression_results: Risultati delle regressioni
+        cycle_analyses: Analisi dei cicli di sviluppo
+    """
+    # 1. Tabella delle statistiche descrittive
+    desc_stats = df.groupby('country')[['gdp_growth', 'hdi', 'education_expenditure', 'health_expenditure']].agg(['mean', 'std', 'min', 'max'])
+    desc_stats.columns = ['_'.join(col).strip() for col in desc_stats.columns.values]
+    desc_stats = desc_stats.round(3)
+    desc_stats.to_markdown('tables/descriptive_stats.md')
+
+    # 2. Tabella delle correlazioni
+    corr_matrix = df[['gdp_growth', 'hdi', 'education_expenditure', 'health_expenditure']].corr()
+    corr_matrix = corr_matrix.round(3)
+    corr_matrix.to_markdown('tables/correlation_matrix.md')
+
+    # 3. Tabella dei risultati delle regressioni
+    regression_table = []
+    for country, country_results in regression_results.items():
+        for chain_type, chain_results in country_results.items():
+            for model_type, model_results in chain_results.items():
+                # Estrai i coefficienti e i p-values
+                for var_name, coef in model_results['params'].items():
+                    if var_name != 'const':  # Escludi l'intercetta
+                        regression_table.append({
+                            'Country': country,
+                            'Chain': chain_type,
+                            'Model': model_type,
+                            'Variable': var_name,
+                            'Coefficient': coef,
+                            'P-value': model_results['pvalues'][var_name],
+                            'R2': model_results['r2']
+                        })
+    
+    regression_df = pd.DataFrame(regression_table)
+    regression_df = regression_df.round(4)
+    regression_df.to_markdown('tables/regression_results.md')
+
+    # 4. Tabella dell'analisi dei cicli
+    cycle_table = []
+    for country, analysis in cycle_analyses.items():
+        cycle_table.append({
+            'Country': country,
+            'Classification': analysis['classification'],
+            'Avg Growth': analysis['metrics']['avg_growth'],
+            'Avg HDI': analysis['metrics']['avg_hdi'],
+            'Growth Relative': analysis['metrics']['growth_relative'],
+            'HDI Relative': analysis['metrics']['hdi_relative']
+        })
+    
+    cycle_df = pd.DataFrame(cycle_table)
+    cycle_df = cycle_df.round(3)
+    cycle_df.to_markdown('tables/cycle_analysis.md')
+
+    print("✅ Tables saved to 'tables/' directory")

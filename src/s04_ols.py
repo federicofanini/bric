@@ -123,7 +123,10 @@ def analyze_country_chain(df, country, chain):
         results[f'{chain}_{label}'] = {
             'r2': model.rsquared,
             'pvalues': dict(zip(model.model.exog_names, model.pvalues)),
-            'params': dict(zip(model.model.exog_names, model.params))
+            'params': dict(zip(model.model.exog_names, model.params)),
+            'residuals': model.resid,
+            'nobs': model.nobs,
+            'rsquared_adj': model.rsquared_adj
         }
 
         # Print summary

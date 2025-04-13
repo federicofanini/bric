@@ -11,10 +11,10 @@ from src.s03_visualize import (
 )
 from src.s06_classify_cycles import (
     analyze_cycle_dynamics, 
-    generate_cycle_analysis_markdown,
     plot_development_typology
 )
 from src.s04_ols import run_regression_analysis
+from src.s07_tables import generate_all_tables
 
 # Create output directories if they don't exist
 os.makedirs('outputs', exist_ok=True)
@@ -22,6 +22,7 @@ os.makedirs('figures', exist_ok=True)
 os.makedirs('figures/diagnostics', exist_ok=True)
 os.makedirs('results', exist_ok=True)
 os.makedirs('figures/descriptive', exist_ok=True)
+os.makedirs('tables', exist_ok=True)
 
 def main():
     # Step 1: Load and clean data
@@ -34,7 +35,7 @@ def main():
     
     # Genera e salva la tabella delle statistiche descrittive
     descriptive_table = generate_descriptive_table(df)
-    with open('figures/descriptive/descriptive_stats.md', 'w') as f:
+    with open('tables/descriptive_stats.md', 'w') as f:
         f.write(descriptive_table)
     
     # Step 3: Create lagged variables
@@ -56,6 +57,10 @@ def main():
     # Generate and save development typology plot
     plot_development_typology(metrics, 'figures/development_typology.png')
     print("✅ Development typology plot saved to figures/development_typology.png")
+
+    # Generate all tables
+    print("\n📊 Generating tables...")
+    generate_all_tables(df, all_results, cycle_analyses)
 
 if __name__ == "__main__":
     main()
