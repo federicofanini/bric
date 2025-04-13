@@ -10,6 +10,7 @@ The project analyzes two causal chains:
 
    - Variables: GDP growth, HDI, education expenditure, health expenditure
    - Lagged variables: 5-year lags for GDP growth and HDI
+
 2. Chain B: Human Development → Economic Growth
 
    - Variables: GDP growth, HDI, gross capital formation (gcf)
@@ -134,11 +135,13 @@ The analysis generates:
 
    - `data/processed/bric_regression_data.xlsx`
    - Separate sheets for each chain and country
+
 2. Visualizations in the figures directory:
 
    - Descriptive analysis plots
    - OLS diagnostic plots
    - Development cycle plots
+
 3. Analysis results:
 
    - Regression summaries in outputs/
