@@ -31,10 +31,20 @@ The project analyzes two causal chains:
 │   ├── s04_ols.py           # OLS regression analysis
 │   ├── s05_ols_diagnostics.py # OLS model diagnostics
 │   ├── s06_classify_cycles.py # Development cycle classification
+│   ├── s07_tables.py        # Table generation functions
 │   └── utils.py             # Utility functions (lag creation)
 ├── figures/                 # Generated figures
 │   ├── descriptive/         # Descriptive analysis plots
 │   └── diagnostics/         # OLS diagnostics plots
+├── tables/                  # Generated tables
+│   ├── descriptive_stats.md
+│   ├── trend_analysis.md
+│   ├── regression_summary.md
+│   ├── regression_coefficients.md
+│   ├── durbin_watson_tests.md
+│   ├── cycle_distribution.md
+│   ├── cycle_analysis.md
+│   └── performance_comparison.md
 ├── outputs/                 # Analysis outputs
 │   └── regression_r2_summary.csv
 ├── results/                 # Analysis results
@@ -85,6 +95,9 @@ This will execute the following steps in sequence:
 5. Run OLS regression analysis (s04_ols.py)
 6. Generate OLS diagnostics (s05_ols_diagnostics.py)
 7. Classify development cycles (s06_classify_cycles.py)
+8. Generate analysis tables (s07_tables.py)
+
+The script provides real-time progress updates with standardized logging messages for each step.
 
 ## Data Processing
 
@@ -127,6 +140,14 @@ This will execute the following steps in sequence:
 - Classifies countries into development typologies
 - Generates development cycle plots
 
+### Table Generation (s07_tables.py)
+
+- Generates descriptive statistics tables
+- Creates trend analysis tables
+- Produces regression summary tables
+- Generates cycle analysis tables
+- Creates performance comparison tables
+
 ## Output
 
 The analysis generates:
@@ -142,7 +163,15 @@ The analysis generates:
    - OLS diagnostic plots
    - Development cycle plots
 
-3. Analysis results:
+3. Analysis tables in the tables directory:
+
+   - Descriptive statistics
+   - Trend analysis
+   - Regression summaries
+   - Cycle analysis
+   - Performance comparisons
+
+4. Analysis results:
 
    - Regression summaries in outputs/
    - Cycle analysis in results/
