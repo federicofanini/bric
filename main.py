@@ -7,15 +7,22 @@ import os
 
 from src.load_data import load_bric_data
 from src.clean_data import clean_bric_data
-from src.utils import create_lags
+from src.utils import create_lags, analyze_country_chain
 from src.diagnostics import run_diagnostics
-from src.visualize import create_descriptive_plots, generate_descriptive_stats
+from src.visualize import (
+    create_descriptive_plots,
+    generate_descriptive_table,
+    plot_diagnostics,
+    plot_development_typology
+)
+from src.classify_cycles import analyze_cycle_dynamics, generate_cycle_analysis_markdown
 
 # Create output directories if they don't exist
 os.makedirs('outputs', exist_ok=True)
 os.makedirs('figures', exist_ok=True)
 os.makedirs('figures/diagnostics', exist_ok=True)
 os.makedirs('results', exist_ok=True)
+os.makedirs('figures/descriptive', exist_ok=True)
 
 # Define chain-specific variables (lagged)
 CHAIN_VARS = {
@@ -85,6 +92,7 @@ def analyze_country_chain(df, country, chain):
         print(f"⚠️ No data for {country} - Chain {chain}")
         return
 
+    results = {}
     for label, vars_used in [('nolag', no_lag_vars), ('lag', lagged_vars)]:
         print(f"\n▶️ Running regression ({label})")
         model, X, y = perform_ols_analysis(df_country, dep_var, vars_used)
@@ -97,6 +105,13 @@ def analyze_country_chain(df, country, chain):
         # Run diagnostics
         model_name = f"{country}_chain_{chain}_{label}"
         run_diagnostics(model, model_name=model_name)
+
+        # Store results
+        results[f'{chain}_{label}'] = {
+            'r2': model.rsquared,
+            'pvalues': dict(zip(model.model.exog_names, model.pvalues)),
+            'params': dict(zip(model.model.exog_names, model.params))
+        }
 
         # Print summary
         print(f"[{label.upper()}] R²: {model.rsquared:.4f} | Adj. R²: {model.rsquared_adj:.4f}")
@@ -116,6 +131,8 @@ def analyze_country_chain(df, country, chain):
             'Adj_R2': model.rsquared_adj,
             'N_obs': int(model.nobs)
         })
+    
+    return results
 
 def main():
     # Step 1: Load and clean data
@@ -125,10 +142,11 @@ def main():
     # Step 2: Perform descriptive analysis
     print("\n📊 Performing descriptive analysis...")
     create_descriptive_plots(df)
-    descriptive_stats = generate_descriptive_stats(df)
-    with open('results/descriptive_analysis.md', 'w') as f:
-        f.write(descriptive_stats)
-    print("✅ Descriptive analysis completed and saved to results/descriptive_analysis.md")
+    
+    # Genera e salva la tabella delle statistiche descrittive
+    descriptive_table = generate_descriptive_table(df)
+    with open('figures/descriptive/descriptive_stats.md', 'w') as f:
+        f.write(descriptive_table)
     
     # Step 3: Create lagged variables
     df = create_lags(df)
@@ -136,10 +154,29 @@ def main():
     # Step 4: Run regression analysis
     countries = ['Brazil', 'Russia', 'India', 'China']
     chains = ['A', 'B']
-
+    
+    all_results = {}
     for country in countries:
+        country_results = {}
         for chain in chains:
-            analyze_country_chain(df, country, chain)
+            results = analyze_country_chain(df, country, chain)
+            if results:
+                country_results.update(results)
+        all_results[country] = country_results
+
+    # Step 5: Analyze development cycles
+    print("\n🔄 Analyzing development cycles...")
+    cycle_analyses = analyze_cycle_dynamics(df)
+    
+    # Generate and save cycle analysis
+    cycle_analysis_md = generate_cycle_analysis_markdown(cycle_analyses)
+    with open('results/cycle_analysis.md', 'w') as f:
+        f.write(cycle_analysis_md)
+    print("✅ Cycle analysis completed and saved to results/cycle_analysis.md")
+    
+    # Generate and save development typology plot
+    plot_development_typology(cycle_analyses, 'figures/development_typology.png')
+    print("✅ Development typology plot saved to figures/development_typology.png")
 
     # Save final summary
     summary_df = pd.DataFrame(results_summary)

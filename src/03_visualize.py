@@ -8,6 +8,7 @@ from scipy import stats
 def ensure_output_dir():
     os.makedirs('figures', exist_ok=True)
     os.makedirs('figures/descriptive', exist_ok=True)
+    os.makedirs('figures/diagnostics', exist_ok=True)
 
 def plot_time_series(df, column, title, ylabel, filename):
     plt.figure(figsize=(10, 6))
@@ -133,3 +134,44 @@ def create_descriptive_plots(df):
     # Histograms
     for col in ['gdp_growth', 'hdi', 'education_expenditure', 'health_expenditure']:
         plot_histogram(df, col, True, f'{col}_histogram')
+
+def generate_descriptive_table(df: pd.DataFrame) -> str:
+    """
+    Genera una tabella markdown con le statistiche descrittive.
+    
+    Args:
+        df: DataFrame con i dati
+        
+    Returns:
+        str: Tabella in formato markdown
+    """
+    # Seleziona le colonne rilevanti
+    cols = ['gdp_growth', 'hdi', 'education_expenditure', 'health_expenditure']
+    
+    # Calcola le statistiche per paese
+    stats_by_country = {}
+    for country in df['country'].unique():
+        country_data = df[df['country'] == country]
+        stats = {}
+        for col in cols:
+            stats[col] = {
+                'mean': country_data[col].mean(),
+                'std': country_data[col].std(),
+                'min': country_data[col].min(),
+                'max': country_data[col].max()
+            }
+        stats_by_country[country] = stats
+    
+    # Genera la tabella markdown
+    markdown = "## Statistiche Descrittive per Paese\n\n"
+    
+    # Intestazione
+    markdown += "| Paese | Variabile | Media | Dev. Std. | Min | Max |\n"
+    markdown += "|-------|-----------|-------|-----------|-----|-----|\n"
+    
+    # Dati
+    for country, stats in stats_by_country.items():
+        for col, values in stats.items():
+            markdown += f"| {country} | {col} | {values['mean']:.2f} | {values['std']:.2f} | {values['min']:.2f} | {values['max']:.2f} |\n"
+    
+    return markdown

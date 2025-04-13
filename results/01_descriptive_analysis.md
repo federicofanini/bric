@@ -175,7 +175,7 @@
 #### Implicazioni
 
 - La crescita economica rallenta mentre l'HDI continua a migliorare
-- Suggerisce un potenziale disaccoppiamento tra crescita economica e sviluppo umano.
+- Suggests a potential decoupling between economic growth and human development
 - I paesi potrebbero essere entrati in una fase di maturità economica
 
 ## 4. Distribution Analysis
@@ -237,14 +237,15 @@
 1. **Divergenza Crescita-Sviluppo**:
 
    - La crescita economica rallenta mentre l'HDI continua a migliorare
-   - Suggerisce un potenziale disaccoppiamento tra crescita economica e sviluppo umano.
+   - Suggests a potential decoupling between economic growth and human development
+
 2. **Pattern di Spesa**:
 
    - Brazil spende di più in welfare
    - China e India hanno spese più basse ma crescono più velocemente
    - Russia mostra un approccio intermedio
-3. **Stabilità vs Crescita**:
 
+3. **Stabilità vs Crescita**:
    - I paesi con crescita più stabile (India) mostrano miglioramenti più graduali
    - I paesi con maggiore volatilità (Russia) hanno HDI più alto ma crescita instabile
 
