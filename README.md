@@ -7,30 +7,49 @@ This repository contains an Ordinary Least Squares (OLS) analysis of the relatio
 The project analyzes two causal chains:
 
 1. Chain A: Economic Growth → Human Development
+
+   - Variables: GDP growth, HDI, education expenditure, health expenditure
+   - Lagged variables: 5-year lags for GDP growth and HDI
+
 2. Chain B: Human Development → Economic Growth
 
-The analysis includes:
-
-- Data preprocessing and feature engineering
-- OLS regression modeling
-- Visualization of key trends and relationships
-- Statistical analysis of the causal relationships
+   - Variables: GDP growth, HDI, gross capital formation (gcf)
+   - Lagged variables: 5-year las for GDP growth and HDI
 
 ## Project Structure
 
 ```
 .
-├── data/               # Data files
-├── src/                # Source code
-│   ├── load_data.py    # Data loading functions
-│   ├── utils.py        # Utility functions
-│   ├── regression.py   # OLS regression models
-│   ├── clean_data.py   # Data cleaning script
-│   ├── ols_analysis.py # OLS analysis script
-│   └── visualize.py    # Visualization functions
-├── figures/            # Generated plots and analysis results
-├── main.py             # Main execution script
-└── requirements.txt    # Python dependencies
+├── data/                    # Data files
+│   ├── raw/                 # Raw data files
+│   └── processed/           # Processed data files
+├── src/                     # Source code
+│   ├── s00_main.py          # Main execution script
+│   ├── s01_load_data.py     # Loads and combines BRIC data from Excel
+│   ├── s02_clean_data.py    # Cleans and preprocesses data
+│   ├── s03_visualize.py     # Visualization functions
+│   ├── s04_ols.py           # OLS regression analysis
+│   ├── s05_ols_diagnostics.py # OLS model diagnostics
+│   ├── s06_classify_cycles.py # Development cycle classification
+│   ├── s07_tables.py        # Table generation functions
+│   └── utils.py             # Utility functions (lag creation)
+├── figures/                 # Generated figures
+│   ├── descriptive/         # Descriptive analysis plots
+│   └── diagnostics/         # OLS diagnostics plots
+├── tables/                  # Generated tables
+│   ├── descriptive_stats.md
+│   ├── trend_analysis.md
+│   ├── regression_summary.md
+│   ├── regression_coefficients.md
+│   ├── durbin_watson_tests.md
+│   ├── cycle_distribution.md
+│   ├── cycle_analysis.md
+│   └── performance_comparison.md
+├── outputs/                 # Analysis outputs
+│   └── regression_r2_summary.csv
+├── results/                 # Analysis results
+│   └── cycle_analysis.md
+└── requirements.txt         # Python dependencies
 ```
 
 ## Dependencies
@@ -38,9 +57,11 @@ The analysis includes:
 The project requires the following Python packages:
 
 - pandas: For data manipulation and analysis
-- seaborn: For statistical data visualization
-- matplotlib: For creating static, animated, and interactive visualizations
+- openpyxl: For Excel file handling
 - statsmodels: For statistical models and tests
+- matplotlib: For creating visualizations
+- seaborn: For enhanced visualizations
+- scipy: For statistical functions
 
 ## Installation
 
@@ -48,7 +69,7 @@ The project requires the following Python packages:
 
 ```bash
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
 2. Install dependencies:
@@ -59,67 +80,102 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Run the Data Cleaning Script
-
-Navigate to the `src` directory and run the data cleaning script:
+Run the main script to perform the full analysis:
 
 ```bash
-python src/clean_data.py
+python s00_main.py
 ```
 
-### Run the OLS Analysis
+This will execute the following steps in sequence:
 
-Execute the OLS analysis script:
+1. Load BRIC data from Excel files (s01_load_data.py)
+2. Clean and preprocess the data (s02_clean_data.py)
+3. Perform descriptive analysis and generate visualizations (s03_visualize.py)
+4. Create lagged variables (utils.py)
+5. Run OLS regression analysis (s04_ols.py)
+6. Generate OLS diagnostics (s05_ols_diagnostics.py)
+7. Classify development cycles (s06_classify_cycles.py)
+8. Generate analysis tables (s07_tables.py)
 
-```bash
-python src/ols_analysis.py
-```
+The script provides real-time progress updates with standardized logging messages for each step.
 
-### Run the Main Analysis
+## Data Processing
 
-Finally, run the main script to perform the full analysis and generate visualizations:
+### Loading Data (s01_load_data.py)
 
-```bash
-python main.py
-```
+- Loads data from Excel files for each BRIC country
+- Combines data for both chains (A and B)
+- Standardizes column names and formats
 
-This will:
+### Cleaning Data (s02_clean_data.py)
 
-1. Load and preprocess the BRIC countries data
-2. Run the OLS regression analysis for both causal chains
-3. Generate visualizations in the `figures` directory
+- Removes missing values
+- Handles outliers
+- Separates data by chain type
+- Removes unused variables (e.g., gcf from Chain A)
 
-## Analysis Components
+### Visualization (s03_visualize.py)
 
-### Data Processing
+- Generates descriptive statistics
+- Creates time series plots
+- Produces correlation heatmaps
+- Generates distribution plots
 
-- Loading BRIC countries data
-- Creating lagged variables
-- Adding country dummy variables
+### OLS Analysis (s04_ols.py)
 
-### Regression Analysis
+- Performs OLS regression for both chains
+- Handles lagged and non-lagged variables
+- Generates regression outputs and plots
 
-- Chain A: Economic Growth → Human Development
-- Chain B: Human Development → Economic Growth
+### Diagnostics (s05_ols_diagnostics.py)
 
-### Visualizations
+- Performs VIF analysis
+- Generates QQ plots
+- Creates residuals vs fitted plots
+- Calculates Cook's distance
 
-- Time series plots of GDP growth and HDI
-- Scatter plots of key relationships
-- Correlation heatmaps
-- Quadrant analysis plots
+### Cycle Classification (s06_classify_cycles.py)
+
+- Analyzes development cycles
+- Classifies countries into development typologies
+- Generates development cycle plots
+
+### Table Generation (s07_tables.py)
+
+- Generates descriptive statistics tables
+- Creates trend analysis tables
+- Produces regression summary tables
+- Generates cycle analysis tables
+- Creates performance comparison tables
 
 ## Output
 
 The analysis generates:
 
-1. Regression model summaries in the console
-2. Visualizations saved in the `figures` directory:
-   - GDP growth trends
-   - HDI trends
-   - Scatter plots
-   - Heatmaps
-   - Quadrant analysis
+1. Processed data in Excel format:
+
+   - `data/processed/bric_regression_data.xlsx`
+   - Separate sheets for each chain and country
+
+2. Visualizations in the figures directory:
+
+   - Descriptive analysis plots
+   - OLS diagnostic plots
+   - Development cycle plots
+
+3. Analysis tables in the tables directory:
+
+   - Descriptive statistics
+   - Trend analysis
+   - Regression summaries
+   - Cycle analysis
+   - Performance comparisons
+
+4. Analysis results:
+
+   - Regression summaries in outputs/
+   - Cycle analysis in results/
+   - R² summary in outputs/
 
 ## Contributing
 

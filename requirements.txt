@@ -3,3 +3,5 @@ numpy>=1.21.0
 seaborn
 matplotlib
 statsmodels
+openpyxl
+tabulate

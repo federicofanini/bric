@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Data files
+data/*.xlsx
+data/*.csv
+data/*.xls
+
+# Output files
+outputs/*
+!outputs/.gitkeep
+
+# Figures
+figures/*
+!figures/.gitkeep
+
+# Logs
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Except
+!data/dataset.xlsx
+!data/bric_regression_ready.xlsx
+!outputs/regression_r2_summary.csv
+!outputs/output_analysis.md
