@@ -1,0 +1,27 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                    hdi   R-squared:                       0.545
+Model:                            OLS   Adj. R-squared:                  0.409
+Method:                 Least Squares   F-statistic:                     2.607
+Date:                Mon, 14 Apr 2025   Prob (F-statistic):              0.110
+Time:                        13:18:26   Log-Likelihood:                 39.911
+No. Observations:                  14   AIC:                            -71.82
+Df Residuals:                      10   BIC:                            -69.26
+Df Model:                           3                                         
+Covariance Type:                  HC3                                         
+=========================================================================================
+                            coef    std err          z      P>|z|      [0.025      0.975]
+-----------------------------------------------------------------------------------------
+const                     0.6494      0.221      2.938      0.003       0.216       1.083
+gdp_growth_lag5          -0.0018      0.003     -0.559      0.576      -0.008       0.005
+education_expenditure    -0.0053      0.017     -0.307      0.759      -0.040       0.029
+health_expenditure        0.0368      0.036      1.030      0.303      -0.033       0.107
+==============================================================================
+Omnibus:                        1.813   Durbin-Watson:                   1.109
+Prob(Omnibus):                  0.404   Jarque-Bera (JB):                1.288
+Skew:                          -0.541   Prob(JB):                        0.525
+Kurtosis:                       1.982   Cond. No.                         173.
+==============================================================================
+
+Notes:
+[1] Standard Errors are heteroscedasticity robust (HC3)

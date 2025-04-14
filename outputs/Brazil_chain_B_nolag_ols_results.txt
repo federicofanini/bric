@@ -1,0 +1,26 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:             gdp_growth   R-squared:                       0.346
+Model:                            OLS   Adj. R-squared:                  0.269
+Method:                 Least Squares   F-statistic:                     3.077
+Date:                Mon, 14 Apr 2025   Prob (F-statistic):             0.0723
+Time:                        13:18:26   Log-Likelihood:                -43.751
+No. Observations:                  20   AIC:                             93.50
+Df Residuals:                      17   BIC:                             96.49
+Df Model:                           2                                         
+Covariance Type:                  HC3                                         
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+const         10.4047     11.926      0.872      0.383     -12.970      33.779
+hdi          -25.6972     16.936     -1.517      0.129     -58.892       7.498
+gcf            0.5160      0.231      2.234      0.025       0.063       0.969
+==============================================================================
+Omnibus:                        1.399   Durbin-Watson:                   1.571
+Prob(Omnibus):                  0.497   Jarque-Bera (JB):                0.981
+Skew:                          -0.238   Prob(JB):                        0.612
+Kurtosis:                       2.025   Cond. No.                         765.
+==============================================================================
+
+Notes:
+[1] Standard Errors are heteroscedasticity robust (HC3)

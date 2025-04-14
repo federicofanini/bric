@@ -40,11 +40,9 @@ data/*.csv
 data/*.xls
 
 # Output files
-outputs/*
 !outputs/.gitkeep
 
 # Figures
-figures/*
 !figures/.gitkeep
 
 # Logs

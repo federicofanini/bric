@@ -1,0 +1,28 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:             gdp_growth   R-squared:                       0.371
+Model:                            OLS   Adj. R-squared:                  0.297
+Method:                 Least Squares   F-statistic:                     39.73
+Date:                Mon, 14 Apr 2025   Prob (F-statistic):           3.91e-07
+Time:                        13:18:27   Log-Likelihood:                -38.266
+No. Observations:                  20   AIC:                             82.53
+Df Residuals:                      17   BIC:                             85.52
+Df Model:                           2                                         
+Covariance Type:                  HC3                                         
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+const         18.9109      5.195      3.640      0.000       8.729      29.093
+hdi          -32.3413      3.632     -8.904      0.000     -39.460     -25.222
+gcf            0.2773      0.121      2.298      0.022       0.041       0.514
+==============================================================================
+Omnibus:                       16.817   Durbin-Watson:                   0.746
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):               16.671
+Skew:                           1.745   Prob(JB):                     0.000240
+Kurtosis:                       5.798   Cond. No.                     1.17e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors are heteroscedasticity robust (HC3)
+[2] The condition number is large, 1.17e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.
