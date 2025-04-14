@@ -83,7 +83,7 @@ pip install -r requirements.txt
 Run the main script to perform the full analysis:
 
 ```bash
-python src/s00_main.py
+python s00_main.py
 ```
 
 This will execute the following steps in sequence:
